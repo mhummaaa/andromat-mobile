@@ -16,6 +16,10 @@ android.minapi = 24
 android.ndk = 25b
 android.archs = arm64-v8a
 android.allow_backup = True
+# CI par SDK license auto-accept (isse 'license is not accepted' error nahi aayega)
+android.accept_sdk_license = True
+# known-good build tools (37 wala license issue avoid)
+android.build_tools_version = 34.0.0
 
 # icon & presplash (files in project root)
 icon.filename = icon.png
