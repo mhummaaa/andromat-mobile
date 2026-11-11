@@ -30,6 +30,8 @@ jobs:
           pip install cython==0.29.36 buildozer==1.5.0
 
       - name: Pre-accept Android SDK licenses + sdkmanager shim
+        env:
+          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
         run: |
           SDK=/home/runner/.buildozer/android/platform/android-sdk
           mkdir -p $SDK/cmdline-tools $SDK/tools/bin
@@ -40,14 +42,17 @@ jobs:
           # naya Google SDK sirf cmdline-tools deta hai, isliye shim banate hain
           printf '#!/bin/bash\nexec %s/cmdline-tools/latest/bin/sdkmanager "$@"\n' "$SDK" > $SDK/tools/bin/sdkmanager
           chmod +x $SDK/tools/bin/sdkmanager
+          # naya sdkmanager Java 17 maangta hai - pehle version check (health test)
+          $SDK/tools/bin/sdkmanager --version
           yes | $SDK/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
-          echo "SDK ready: licenses accepted + sdkmanager shim created"
+          echo "SDK ready: licenses accepted + shim works (version check passed)"
 
       - name: Build APK (debug)
         run: |
           buildozer -v android debug
         env:
           BUILDOZER_BIN: /usr/local/bin/buildozer
+          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
