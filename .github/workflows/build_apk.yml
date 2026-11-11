@@ -29,6 +29,16 @@ jobs:
           pip install --upgrade pip
           pip install cython==0.29.36 buildozer==1.5.0
 
+      - name: Pre-accept Android SDK licenses
+        run: |
+          SDK=/home/runner/.buildozer/android/platform/android-sdk
+          mkdir -p $SDK/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip -d $SDK/cmdline-tools
+          mv $SDK/cmdline-tools/cmdline-tools $SDK/cmdline-tools/latest
+          yes | $SDK/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
+          echo "SDK licenses accepted"
+
       - name: Build APK (debug)
         run: |
           buildozer -v android debug
@@ -41,4 +51,3 @@ jobs:
           name: andromat-chat-apk
           path: bin/*.apk
           if-no-files-found: error
-
