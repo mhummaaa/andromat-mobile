@@ -29,15 +29,19 @@ jobs:
           pip install --upgrade pip
           pip install cython==0.29.36 buildozer==1.5.0
 
-      - name: Pre-accept Android SDK licenses
+      - name: Pre-accept Android SDK licenses + sdkmanager shim
         run: |
           SDK=/home/runner/.buildozer/android/platform/android-sdk
-          mkdir -p $SDK/cmdline-tools
+          mkdir -p $SDK/cmdline-tools $SDK/tools/bin
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip -q commandlinetools-linux-11076708_latest.zip -d $SDK/cmdline-tools
           mv $SDK/cmdline-tools/cmdline-tools $SDK/cmdline-tools/latest
+          # buildozer legacy path expect karta hai (tools/bin/sdkmanager) -
+          # naya Google SDK sirf cmdline-tools deta hai, isliye shim banate hain
+          printf '#!/bin/bash\nexec %s/cmdline-tools/latest/bin/sdkmanager "$@"\n' "$SDK" > $SDK/tools/bin/sdkmanager
+          chmod +x $SDK/tools/bin/sdkmanager
           yes | $SDK/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
-          echo "SDK licenses accepted"
+          echo "SDK ready: licenses accepted + sdkmanager shim created"
 
       - name: Build APK (debug)
         run: |
