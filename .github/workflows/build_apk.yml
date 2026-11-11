@@ -27,7 +27,7 @@ jobs:
       - name: Install buildozer + cython
         run: |
           pip install --upgrade pip
-          pip install cython==0.29.36 buildozer==1.5.0
+          pip install cython==0.29.36 buildozer==1.6.0
 
       - name: Pre-accept Android SDK licenses + sdkmanager shim
         env:
