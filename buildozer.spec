@@ -6,7 +6,9 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 
-requirements = python3,kivy==2.3.0,telethon,numpy,pyjnius,cryptography,android
+requirements = python3,kivy==2.3.0,telethon,numpy,pyjnius,android
+# Note: cryptography hata diya - Telethon ko sirf pyaes+rsa chahiye (pure Python),
+# aur cryptography recipe Android pe heavy Rust build maangta hai
 
 orientation = portrait
 fullscreen = 0
